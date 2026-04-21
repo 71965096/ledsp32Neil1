@@ -1,271 +1,236 @@
-/* --- VARIABLES CLONADAS DEL DISEÑO --- */
+/* --- TEMA AZUL SCI-FI --- */
 :root {
-  --bg-app: #0f111a;
-  --bg-card: #141721;
-  --bg-card-border: rgba(255, 255, 255, 0.05);
+  --blue-bg: #070b14;
+  --blue-panel: rgba(14, 21, 38, 0.7);
+  --blue-border: rgba(56, 189, 248, 0.2);
   
-  --accent-green: #73f08c; /* Verde del botón */
-  --accent-green-orb: #82f799; /* Verde de la esfera */
-  --accent-green-glow: rgba(115, 240, 140, 0.3);
+  --cyan-primary: #0ea5e9;
+  --cyan-bright: #38bdf8;
+  --cyan-glow: rgba(14, 165, 233, 0.6);
+  --cyan-dim: rgba(14, 165, 233, 0.1);
   
-  --text-primary: #ffffff;
-  --text-muted: #5e6473;
-  --text-dark: #2d3342;
-  
-  --btn-dark: #1b1e2a;
+  --text-main: #f0f9ff;
+  --text-muted: #7dd3fc;
+  --danger-blue: #1e3a8a; /* Un azul muy oscuro para apagado */
 }
 
-/* --- RESET & FONDO --- */
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(circle at center 20%, #151a28 0%, var(--bg-app) 100%);
-  color: var(--text-primary);
-  min-height: 100vh;
+/* Envolvemos todo para que coincida con tu body global */
+.blue-layout {
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  padding: 40px 20px;
+  background: radial-gradient(circle at 50% 50%, #0f172a 0%, var(--blue-bg) 100%);
+  min-height: 100%;
 }
 
-.app-container {
-  width: 100%;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-
-/* --- TARJETA PRINCIPAL --- */
-.dashboard-card {
-  background: var(--bg-card);
-  width: 100%;
-  max-width: 680px;
-  border-radius: 20px;
+/* --- PANEL PRINCIPAL DE CRISTAL --- */
+.glass-circle-panel {
+  background: var(--blue-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--blue-border);
+  border-radius: 40px; /* Bordes muy redondeados */
   padding: 40px;
-  box-shadow: 
-    0 30px 60px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--bg-card-border);
+  width: 100%;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
-}
-
-/* --- SECCIÓN SUPERIOR: LED Y TEXTO --- */
-.top-section {
-  display: flex;
   align-items: center;
-  gap: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(14, 165, 233, 0.05);
 }
 
-/* LED Anillos y Esfera */
-.led-wrapper {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+/* --- CABECERA --- */
+.panel-header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.led-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 2px solid #202534;
-  transition: all 0.5s ease;
-}
-
-.led-ring.outer { width: 100%; height: 100%; }
-.led-ring.inner { width: 75%; height: 75%; }
-
-.led-ring.outer.glow { border-color: rgba(115, 240, 140, 0.1); }
-.led-ring.inner.glow { border-color: rgba(115, 240, 140, 0.2); }
-
-.led-orb {
-  position: relative;
-  width: 45%;
-  height: 45%;
-  border-radius: 50%;
-  transition: all 0.4s ease;
-  z-index: 2;
-}
-
-.led-orb.on {
-  background: radial-gradient(circle at 30% 30%, #ffffff 0%, var(--accent-green-orb) 40%, #2f9f4a 100%);
-  box-shadow: 
-    0 0 30px var(--accent-green-glow),
-    0 0 60px var(--accent-green-glow),
-    inset -5px -5px 15px rgba(0,0,0,0.3);
-}
-
-.led-orb.off {
-  background: radial-gradient(circle at 30% 30%, #3a4155 0%, #1f2433 60%, #10131d 100%);
-  box-shadow: inset -5px -5px 15px rgba(0,0,0,0.5);
-}
-
-.orb-highlight {
-  position: absolute;
-  top: 15%;
-  left: 20%;
-  width: 30%;
-  height: 30%;
-  background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-  border-radius: 50%;
-}
-
-/* Textos de Estado */
-.status-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.status-title {
-  font-size: 3.5rem;
-  font-weight: 900;
-  margin: -5px 0 5px 0;
-  text-transform: lowercase;
-  /* Emulando la fuente ancha de la imagen */
-  letter-spacing: -1px;
-  transform: scaleX(1.15); 
-  transform-origin: left center;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-.text-green {
-  color: var(--accent-green);
-  text-shadow: 0 0 20px var(--accent-green-glow);
-}
-
-.text-dark {
-  color: var(--text-dark);
-}
-
-.hint-text {
-  color: var(--text-muted);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.85rem;
-  margin: 0;
-}
-
-/* --- SECCIÓN MEDIA: BOTONES --- */
-.actions-section {
-  display: flex;
-  gap: 15px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid var(--bg-card-border);
-}
-
-.btn {
-  flex: 1;
-  padding: 18px 0;
-  border-radius: 12px;
-  border: none;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-on {
-  background: var(--accent-green);
-  color: #000000;
-}
-
-.btn-on:hover, .btn-on.active {
-  box-shadow: 0 0 25px var(--accent-green-glow);
-  transform: translateY(-2px);
-}
-
-.btn-off {
-  background: var(--btn-dark);
-  color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.03);
-}
-
-.btn-off:hover, .btn-off.active {
-  color: var(--text-primary);
-  background: #232736;
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-/* --- SECCIÓN INFERIOR: METADATOS --- */
-.footer-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.meta-block {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.meta-block:last-child {
-  text-align: right;
-  align-items: flex-end;
-}
-
-.divider {
-  width: 1px;
-  height: 40px;
-  background-color: var(--bg-card-border);
-  margin: 0 20px;
-}
-
-/* Utilidades de texto */
-.label-text {
-  color: var(--text-muted);
-  font-size: 0.7rem;
-  font-family: 'Courier New', Courier, monospace;
-  text-transform: uppercase;
+.panel-header h2 {
+  font-size: 1.8rem;
+  color: var(--text-main);
+  margin: 0 0 10px 0;
   letter-spacing: 2px;
 }
 
-.value-text {
-  color: #a0a6b5;
-  font-size: 0.95rem;
+.panel-header h2 span {
+  font-weight: 300;
+  color: var(--cyan-primary);
 }
 
-.monospace {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+.status-badge {
+  background: var(--cyan-dim);
+  color: var(--cyan-bright);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border: 1px solid var(--blue-border);
+  display: inline-block;
+  margin: 0;
 }
 
-/* Media Query para móviles */
-@media (max-width: 600px) {
-  .top-section {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-  .status-title {
-    transform-origin: center center;
-    font-size: 2.8rem;
-  }
-  .actions-section {
-    flex-direction: column;
-  }
-  .footer-section {
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-  }
-  .meta-block {
-    text-align: center;
-    align-items: center;
-  }
-  .meta-block:last-child {
-    text-align: center;
-    align-items: center;
-  }
-  .divider {
-    width: 50%;
-    height: 1px;
-    margin: 10px 0;
-  }
+/* --- EL NÚCLEO (REACTOR CIRCULAR) --- */
+.reactor-container {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+/* Anillos exteriores giratorios */
+.reactor-ring {
+  position: absolute;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transition: all 0.5s ease;
+}
+
+.reactor-ring.outer {
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--cyan-primary);
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  opacity: 0.5;
+}
+
+.reactor-ring.inner {
+  width: 80%;
+  height: 80%;
+  border: 3px solid transparent;
+  border-top: 3px solid var(--cyan-bright);
+  border-bottom: 3px solid var(--cyan-bright);
+  opacity: 0.7;
+}
+
+/* El centro brillante */
+.reactor-core {
+  width: 55%;
+  height: 55%;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.4s ease-out;
+  z-index: 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.reactor-core::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.4) 0%, transparent 60%);
+  z-index: 2;
+}
+
+.reactor-core.active {
+  background: var(--cyan-primary);
+  box-shadow: 
+    0 0 20px var(--cyan-primary),
+    0 0 60px var(--cyan-glow),
+    inset 0 0 20px rgba(255,255,255,0.5);
+  border: 2px solid #ffffff;
+}
+
+.reactor-core.inactive {
+  background: var(--blue-bg);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  border: 2px solid var(--danger-blue);
+}
+
+.core-text {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 900;
+  z-index: 3;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Animaciones del anillo */
+.spin-slow { animation: spin 15s linear infinite; }
+.spin-fast { animation: spin 4s linear infinite; border-color: var(--cyan-bright); opacity: 1; }
+.spin-reverse { animation: spin-reverse 8s linear infinite; }
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+
+/* --- CONTROLES TIPO PÍLDORA --- */
+.pill-controls {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+  margin-bottom: 30px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.pill-btn {
+  flex: 1;
+  padding: 16px 0;
+  border-radius: 40px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.pill-btn:hover:not(:disabled) {
+  color: var(--text-main);
+  background: rgba(255,255,255,0.05);
+}
+
+.on-btn.selected {
+  background: var(--cyan-primary);
+  color: #000;
+  box-shadow: 0 0 15px var(--cyan-glow);
+}
+
+.off-btn.selected {
+  background: var(--danger-blue);
+  color: var(--text-main);
+}
+
+.pill-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- FOOTER METADATOS --- */
+.panel-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 10px;
+}
+
+.info-pill {
+  background: var(--cyan-dim);
+  border: 1px solid var(--blue-border);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.info-label {
+  color: var(--cyan-bright);
+  font-weight: bold;
+  margin-right: 5px;
 }

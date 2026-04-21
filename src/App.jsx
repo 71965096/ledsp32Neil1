@@ -6,21 +6,17 @@ function App() {
   const [ledOn, setLedOn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [lastUpdate, setLastUpdate] = useState('--/--/----, --:--:--')
+  const [lastUpdate, setLastUpdate] = useState('--:--:--')
 
-  // Formateador de fecha para que se vea como en tu diseño
-  const formatDate = (dateString) => {
-    if (!dateString) return '--/--/----, --:--:--'
+  const formatTime = (dateString) => {
+    if (!dateString) return '--:--:--'
     const date = new Date(dateString)
-    return date.toLocaleString('es-ES', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      hour12: true
-    }).replace(/, /, ', ').toLowerCase() // Para que el "p. m." quede en minúscula
+    return date.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
   }
 
   useEffect(() => {
@@ -35,7 +31,7 @@ function App() {
         console.error('Error al cargar estado:', error)
       } else if (data) {
         setLedOn(data.led_status)
-        setLastUpdate(formatDate(data.updated_at || new Date().toISOString()))
+        setLastUpdate(formatTime(data.updated_at || new Date().toISOString()))
       }
       setLoading(false)
     }
@@ -54,7 +50,7 @@ function App() {
         },
         (payload) => {
           setLedOn(payload.new.led_status)
-          setLastUpdate(formatDate(payload.new.updated_at || new Date().toISOString()))
+          setLastUpdate(formatTime(payload.new.updated_at || new Date().toISOString()))
         }
       )
       .subscribe()
@@ -70,9 +66,8 @@ function App() {
     setIsUpdating(true)
     const now = new Date().toISOString()
     
-    // Actualización optimista para que la UI se sienta instantánea
     setLedOn(status)
-    setLastUpdate(formatDate(now))
+    setLastUpdate(formatTime(now))
 
     const { error } = await supabase
       .from('device_state')
@@ -82,66 +77,57 @@ function App() {
       })
       .eq('device_name', 'esp32-led-1')
 
-    if (error) {
-      console.error('Error al actualizar estado:', error)
-      // Si falla, podrías revertir el estado aquí
-    }
+    if (error) console.error('Error al actualizar estado:', error)
     setIsUpdating(false)
   }
 
   return (
-    <div className="app-container">
-      <div className="dashboard-card">
+    <div className="blue-layout">
+      <div className="glass-circle-panel">
         
-        {/* SECCIÓN SUPERIOR: LED y Textos */}
-        <div className="top-section">
-          {/* Anillos y Esfera LED */}
-          <div className="led-wrapper">
-            <div className={`led-ring outer ${ledOn ? 'glow' : ''}`}></div>
-            <div className={`led-ring inner ${ledOn ? 'glow' : ''}`}></div>
-            <div className={`led-orb ${ledOn ? 'on' : 'off'}`}>
-              <div className="orb-highlight"></div>
-            </div>
-          </div>
+        {/* Cabecera minimalista */}
+        <div className="panel-header">
+          <h2>NEXUS <span>ESP32</span></h2>
+          <p className="status-badge">{loading ? 'CONECTANDO...' : 'SISTEMA ONLINE'}</p>
+        </div>
 
-          {/* Textos de Estado */}
-          <div className="status-info">
-            <span className="label-text tracking-widest">ESTADO ACTUAL</span>
-            <h1 className={`status-title ${ledOn ? 'text-green' : 'text-dark'}`}>
-              {loading ? 'cargando' : (ledOn ? 'encendido' : 'apagado')}
-            </h1>
-            <p className="hint-text">el estado se conserva aunque recargues la página</p>
+        {/* NÚCLEO CIRCULAR (El LED) */}
+        <div className="reactor-container">
+          <div className={`reactor-ring outer ${ledOn ? 'spin-fast' : 'spin-slow'}`}></div>
+          <div className={`reactor-ring inner ${ledOn ? 'spin-reverse' : ''}`}></div>
+          
+          <div className={`reactor-core ${ledOn ? 'active' : 'inactive'}`}>
+            <span className="core-text">
+              {loading ? '...' : (ledOn ? 'ON' : 'OFF')}
+            </span>
           </div>
         </div>
 
-        {/* SECCIÓN MEDIA: Botones */}
-        <div className="actions-section">
+        {/* Controles tipo Píldora */}
+        <div className="pill-controls">
           <button 
-            className={`btn btn-on ${ledOn ? 'active' : ''}`}
+            className={`pill-btn on-btn ${ledOn ? 'selected' : ''}`}
             onClick={() => updateLedState(true)}
-            disabled={loading || isUpdating}
+            disabled={loading || isUpdating || ledOn}
           >
-            encender
+            ACTIVAR
           </button>
           <button 
-            className={`btn btn-off ${!ledOn ? 'active' : ''}`}
+            className={`pill-btn off-btn ${!ledOn && !loading ? 'selected' : ''}`}
             onClick={() => updateLedState(false)}
-            disabled={loading || isUpdating}
+            disabled={loading || isUpdating || !ledOn}
           >
-            apagar
+            DESACTIVAR
           </button>
         </div>
 
-        {/* SECCIÓN INFERIOR: Metadatos */}
-        <div className="footer-section">
-          <div className="meta-block">
-            <span className="label-text tracking-widest">DISPOSITIVO</span>
-            <span className="value-text monospace">esp32-led-1</span>
+        {/* Metadatos inferiores */}
+        <div className="panel-footer">
+          <div className="info-pill">
+            <span className="info-label">ID:</span> esp32-led-1
           </div>
-          <div className="divider"></div>
-          <div className="meta-block">
-            <span className="label-text tracking-widest">ÚLTIMA ACTUALIZACIÓN</span>
-            <span className="value-text monospace">{lastUpdate}</span>
+          <div className="info-pill">
+            <span className="info-label">SYNC:</span> {lastUpdate}
           </div>
         </div>
 
